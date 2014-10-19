@@ -57,8 +57,8 @@
        (ppat v pat (begin e0 e ...) (fk))))))
 
 (define-syntax ppat
-  (syntax-rules (? comma unquote)
-    ((_ v ? kt kf) kt)
+  (syntax-rules (_ comma unquote)
+    ((_ v _ kt kf) kt)
     ((_ v () kt kf) (if (null? v) kt kf))
 ;   ((_ v (quote lit) kt kf) (if (equal? v (quote lit)) kt kf))
     ((_ v (unquote var) kt kf) (let ((var v)) kt))
