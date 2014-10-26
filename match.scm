@@ -9,15 +9,17 @@
       ((or) (apply or-pat (cdr p)))
       ((and)(apply and-pat (cdr p)))
       ((not) (apply not-pat (cdr p)))
-      ((cons)(apply cons-pat (cdr p)))
+      ((cons) (apply cons-pat (cdr p)))
       ((list) (apply list-pat (cdr p)))
       ((@) (apply var-pat (cdr p)))
       ((quote) (equal?-pat p))
-     ;; ((quasiquote) ...)
+      ((quasiquote) (apply quasiquote-pat (cdr p)))
       (else (apply list-pat p))))
    ((pair? p) (cons-pat (car p) (cdr p)))
    (else (error "invalid pattern" p))))
 
+
+ 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; PATTERN COMBINATORS ;;
@@ -100,6 +102,15 @@
    (foldr (lambda (c m) `(cons ,c ,m))
           '(== '())
           sub-patterns)))
+
+(define (quasiquote-pat term)
+  (cond
+   ((and (list? term) (= 2 (length term)) (equal? 'unquote (car term)))
+    (compile-pattern (cadr term)))
+   ((pair? term)
+    (cons-pat (list 'quasiquote (car term))
+              (list 'quasiquote (cdr term))))
+   (else (compile-pattern `(quote ,term)))))
 
 ;;;;;;;;;;;;;;;;
 ;; MAIN FORMS ;;
