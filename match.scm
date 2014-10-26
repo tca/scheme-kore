@@ -16,10 +16,8 @@
       ((quasiquote) (apply quasiquote-pat (cdr p)))
       (else (apply list-pat p))))
    ((pair? p) (cons-pat (car p) (cdr p)))
+   ((atom? p) (equal?-pat p))
    (else (error "invalid pattern" p))))
-
-
- 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; PATTERN COMBINATORS ;;
